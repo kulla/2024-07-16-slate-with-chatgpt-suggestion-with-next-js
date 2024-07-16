@@ -69,10 +69,11 @@ const SlateEditor = () => {
     }) => {
       controller.current = new AbortController()
       const response = await fetch(
-        `/api/complete?context=${encodeURIComponent(suffix)}`,
-        { signal: controller.current.signal },
+        `/api/complete-text?suffix=${encodeURIComponent(suffix)}`,
+        { signal: controller.current.signal, method: 'POST' },
       )
       if (!response.ok) {
+        console.error('Failed to fetch suggestion', await response.text())
         throw new Error('Failed to fetch suggestion')
       }
       return response.json() as Promise<{
