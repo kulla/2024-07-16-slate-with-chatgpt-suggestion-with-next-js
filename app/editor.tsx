@@ -90,6 +90,7 @@ const SlateEditor = () => {
     promptTokens: 0,
     completionTokens: 0,
   })
+  const [cost, setCost] = React.useState(0)
 
   const { editor, editorKey } = useMemo(
     () => ({
@@ -141,10 +142,19 @@ const SlateEditor = () => {
         editor.setSelection(selection)
       }
 
+      const { input, output } = getPrice(model)
+
       setTokens((prev) => ({
         promptTokens: prev.promptTokens + promptTokens,
         completionTokens: prev.completionTokens + completionTokens,
       }))
+
+      setCost(
+        (prev) =>
+          prev +
+          (input * promptTokens) / 1e6 +
+          (output * completionTokens) / 1e6,
+      )
     },
   })
 
@@ -224,7 +234,7 @@ const SlateEditor = () => {
     }, waitTimeForSuggestion)
   }, [editor, fetchSuggestion, waitTimeForSuggestion])
 
-  const cost = (0.5 * promptTokens) / 1e6 + (1.5 * completionTokens) / 1e6
+  const { input, output } = getPrice(model)
 
   return (
     <>
@@ -302,10 +312,29 @@ const SlateEditor = () => {
         {completionTokens}
       </p>
       <p>Costs so far: {cost}$</p>
+      <p>
+        Price of current model: Input={input}$/1M tokens, Output={output}$/1M
+        tokens{' '}
+      </p>
       <h1>Backend response</h1>
       <pre>{JSON.stringify(backendResponse, null, 2)}</pre>
     </>
   )
+}
+
+function getPrice(model: Model) {
+  switch (model) {
+    case Model.GPT_4O:
+      return { input: 5, output: 15 }
+    case Model.GPT_4O_MINI:
+      return { input: 0.15, output: 0.6 }
+    case Model.GPT_3_5_TURBO:
+      return { input: 0.5, output: 1.5 }
+    case Model.GPT_4:
+      return { input: 30, output: 60 }
+    case Model.GPT_4_TURBO:
+      return { input: 10, output: 30 }
+  }
 }
 
 function toggleMark(editor: Editor, format: 'bold' | 'italic') {
