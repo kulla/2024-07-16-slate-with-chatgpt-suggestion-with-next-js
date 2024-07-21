@@ -18,7 +18,7 @@ import {
 import { withHistory, HistoryEditor } from 'slate-history'
 import { useMutation } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
-import { PasswordContext } from './password-context'
+import { PasswordContext } from '../hooks/password-context'
 
 interface CustomText {
   text: string

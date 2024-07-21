@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import React from 'react'
 import { useMutation } from '@tanstack/react-query'
 
-import { PasswordContext } from './password-context'
+import { PasswordContext } from '../hooks/password-context'
 
 interface LoginFormProps {
   children: React.ReactNode

@@ -1,7 +1,7 @@
 'use client'
 
-import SlateEditor from './editor'
-import LoginForm from './login-form'
+import SlateEditor from './components/editor'
+import LoginForm from './components/login-form'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
