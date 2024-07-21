@@ -46,6 +46,9 @@ const initialValue: CustomElement[] = [
 
 const SlateEditor = () => {
   const password = React.useContext(PasswordContext)
+
+  const [waitTimeForSuggestion, setWaitTimeForSuggestion] = React.useState(500)
+
   const controller = React.useRef<AbortController | null>(null)
   const lastChange = React.useRef<number>(Date.now())
   const suggestionsEnabled = React.useRef<boolean>(true)
@@ -180,8 +183,8 @@ const SlateEditor = () => {
       ) {
         fetchSuggestion.mutate({ suffix, lastChangeOfThisCall })
       }
-    }, 1000)
-  }, [editor])
+    }, waitTimeForSuggestion)
+  }, [editor, fetchSuggestion, waitTimeForSuggestion])
 
   const cost = (0.5 * promptTokens) / 1e6 + (1.5 * completionTokens) / 1e6
 
@@ -219,6 +222,17 @@ const SlateEditor = () => {
           />
         </Slate>
       </div>
+
+      <h1>Settings</h1>
+      <label>
+        Wait time for start fetching suggestion in ms:
+        <input
+          type="number"
+          className="border rounded-lg p-1"
+          value={waitTimeForSuggestion}
+          onChange={(e) => setWaitTimeForSuggestion(Number(e.target.value))}
+        />
+      </label>
       <h1>Data about the prototype</h1>
       <p>Status of fetching suggestions: {fetchSuggestion.status}</p>
       <p>
