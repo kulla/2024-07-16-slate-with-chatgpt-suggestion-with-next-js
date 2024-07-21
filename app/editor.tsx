@@ -71,7 +71,6 @@ Vervollständige nun den Text, indem du maximal einen Absatz oder zwei Sätze hi
 
 Deine Antwort soll im JSON-Format erfolgen und folgende Felder enthalten:
 - "completion": Der Text, den du zur Vervollständigung hinzufügst (maximal ein Absatz oder zwei Sätze).
-- "newWord": Ein boolescher Wert (true/false), der angibt, ob die Ergänzung mit einem eigenen Absatz beginnt (true) oder direkt an den bestehenden Text anschließt (false).
 
 Analysiere den gegebenen Text sorgfältig und erstelle dann eine passende Ergänzung. Gib deine Antwort im spezifizierten JSON-Format aus, ohne zusätzliche Erklärungen oder Kommentare.`
 
