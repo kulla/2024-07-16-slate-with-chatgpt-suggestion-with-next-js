@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 import { OpenAI } from 'openai'
 
 const Completion = t.type({ completion: t.string, newWord: t.boolean })
-const openai = new OpenAI()
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 const prompt = `Du bist ein KI-Assistent, der darauf spezialisiert ist, Lernmaterialien in deutscher Sprache zu vervollständigen. Deine Aufgabe ist es, einen gegebenen Text zu ergänzen, indem du maximal einen Absatz oder zwei Sätze hinzufügst.
 
 Beachte folgende Richtlinien bei der Textvervollständigung:
