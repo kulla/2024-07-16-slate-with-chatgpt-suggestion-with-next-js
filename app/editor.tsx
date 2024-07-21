@@ -81,6 +81,7 @@ const SlateEditor = () => {
   const [waitTimeForSuggestion, setWaitTimeForSuggestion] = React.useState(500)
   const [model, setModel] = React.useState<Model>(Model.GPT_3_5_TURBO)
   const [prompt, setPrompt] = React.useState(defaultPrompt)
+  const [backendResponse, setBackendResponse] = React.useState<unknown>(null)
 
   const controller = React.useRef<AbortController | null>(null)
   const lastChange = React.useRef<number>(Date.now())
@@ -110,11 +111,15 @@ const SlateEditor = () => {
         `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}&model=${model}&prompt=${encodeURIComponent(prompt)}`,
         { signal: controller.current.signal, method: 'POST' },
       )
+      const backendResponse = await response.json()
+
+      setBackendResponse(backendResponse)
+
       if (!response.ok) {
         console.error('Failed to fetch suggestion', await response.text())
         throw new Error('Failed to fetch suggestion')
       }
-      return response.json() as Promise<{
+      return backendResponse as Promise<{
         suggestion: string
         promptTokens: number
         completionTokens: number
@@ -297,6 +302,8 @@ const SlateEditor = () => {
         {completionTokens}
       </p>
       <p>Costs so far: {cost}$</p>
+      <h1>Backend response</h1>
+      <pre>{JSON.stringify(backendResponse, null, 2)}</pre>
     </>
   )
 }
