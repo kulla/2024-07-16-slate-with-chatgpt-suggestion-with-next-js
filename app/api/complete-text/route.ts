@@ -50,7 +50,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       )
     }
 
-    const suggestion = (completion.newWord ? ' ' : '') + completion.completion
+    const suggestion =
+      (completion.newWord && !suffix.endsWith(' ') && !suffix.endsWith('\n')
+        ? ' '
+        : '') + completion.completion
 
     return NextResponse.json({
       suggestion,
