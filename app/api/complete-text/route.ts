@@ -29,6 +29,10 @@ Deine Antwort soll im JSON-Format erfolgen und folgende Felder enthalten:
 Analysiere den gegebenen Text sorgfältig und erstelle dann eine passende Ergänzung. Gib deine Antwort im spezifizierten JSON-Format aus, ohne zusätzliche Erklärungen oder Kommentare.`
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  if (req.nextUrl.searchParams.get('password') !== process.env.PASSWORD) {
+    return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
+  }
+
   const suffix = req.nextUrl.searchParams.get('suffix')
 
   try {

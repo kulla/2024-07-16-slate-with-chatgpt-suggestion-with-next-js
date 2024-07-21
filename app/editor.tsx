@@ -18,6 +18,7 @@ import {
 import { withHistory, HistoryEditor } from 'slate-history'
 import { useMutation } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
+import { PasswordContext } from './password-context'
 
 interface CustomText {
   text: string
@@ -44,6 +45,7 @@ const initialValue: CustomElement[] = [
 ]
 
 const SlateEditor = () => {
+  const password = React.useContext(PasswordContext)
   const controller = React.useRef<AbortController | null>(null)
   const lastChange = React.useRef<number>(Date.now())
   const suggestionsEnabled = React.useRef<boolean>(true)
@@ -69,7 +71,7 @@ const SlateEditor = () => {
     }) => {
       controller.current = new AbortController()
       const response = await fetch(
-        `/api/complete-text?suffix=${encodeURIComponent(suffix)}`,
+        `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}`,
         { signal: controller.current.signal, method: 'POST' },
       )
       if (!response.ok) {
