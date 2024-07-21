@@ -40,14 +40,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Invalid suffix' }, { status: 400 })
     }
 
+    const model = req.nextUrl.searchParams.get('model') ?? 'gpt-3.5-turbo'
+
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model,
       messages: [
         { role: 'system', content: prompt },
         { role: 'user', content: `<text>${suffix}</text>` },
       ],
       temperature: 0.25,
-      response_format: { type: 'json_object' },
+      ...(model != 'gpt-4' ? { response_format: { type: 'json_object' } } : {}),
     })
     const { choices } = response
 

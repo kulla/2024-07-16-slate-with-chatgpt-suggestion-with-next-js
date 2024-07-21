@@ -44,10 +44,19 @@ const initialValue: CustomElement[] = [
   },
 ]
 
+enum Model {
+  GPT_3_5_TURBO = 'gpt-3.5-turbo',
+  GPT_4 = 'gpt-4',
+  GPT_4O = 'gpt-4o',
+  GPT_4_TURBO = 'gpt-4-turbo',
+  GPT_4O_MINI = 'gpt-4o-mini',
+}
+
 const SlateEditor = () => {
   const password = React.useContext(PasswordContext)
 
   const [waitTimeForSuggestion, setWaitTimeForSuggestion] = React.useState(500)
+  const [model, setModel] = React.useState<Model>(Model.GPT_3_5_TURBO)
 
   const controller = React.useRef<AbortController | null>(null)
   const lastChange = React.useRef<number>(Date.now())
@@ -74,7 +83,7 @@ const SlateEditor = () => {
     }) => {
       controller.current = new AbortController()
       const response = await fetch(
-        `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}`,
+        `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}&model=${model}`,
         { signal: controller.current.signal, method: 'POST' },
       )
       if (!response.ok) {
@@ -224,15 +233,29 @@ const SlateEditor = () => {
       </div>
 
       <h1>Settings</h1>
-      <label>
-        Wait time for start fetching suggestion in ms:
+      <div>
+        <label>Wait time for start fetching suggestion in ms: </label>
         <input
           type="number"
           className="border rounded-lg p-1"
           value={waitTimeForSuggestion}
           onChange={(e) => setWaitTimeForSuggestion(Number(e.target.value))}
         />
-      </label>
+      </div>
+      <div>
+        <label>Model: </label>
+        <select
+          className="border rounded-lg p-1"
+          value={model}
+          onChange={(e) => setModel(e.target.value as Model)}
+        >
+          {Object.values(Model).map((model) => (
+            <option key={model} value={model}>
+              {model}
+            </option>
+          ))}
+        </select>
+      </div>
       <h1>Data about the prototype</h1>
       <p>Status of fetching suggestions: {fetchSuggestion.status}</p>
       <p>
