@@ -185,22 +185,39 @@ const SlateEditor = () => {
 
   return (
     <>
-      <div>
-        <button onClick={() => toggleMark(editor, 'bold')}>Bold</button>
-        <button onClick={() => toggleMark(editor, 'italic')}>Italic</button>
+      <h1>Editor</h1>
+      <div className="mt-1 border rounded-lg mb-2">
+        <div
+          style={{ backgroundColor: '#FFBE5E' }}
+          className="p-2 flex space-x-2 rounded-t-lg"
+        >
+          <button
+            onClick={() => toggleMark(editor, 'bold')}
+            className="px-1 font-bold shadow rounded w-5"
+          >
+            F
+          </button>
+          <button
+            onClick={() => toggleMark(editor, 'italic')}
+            className="px-1 shadow italic rounded w-5"
+          >
+            K
+          </button>
+        </div>
+        <Slate
+          editor={editor}
+          key={editorKey}
+          initialValue={initialValue}
+          onChange={onChange}
+        >
+          <Editable
+            renderLeaf={(props) => <Leaf {...props} />}
+            onKeyDown={onKeyDown}
+            style={{ padding: '0.2em' }}
+          />
+        </Slate>
       </div>
-      <Slate
-        editor={editor}
-        key={editorKey}
-        initialValue={initialValue}
-        onChange={onChange}
-      >
-        <Editable
-          renderLeaf={(props) => <Leaf {...props} />}
-          onKeyDown={onKeyDown}
-        />
-      </Slate>
-      <hr />
+      <h1>Data about the prototype</h1>
       <p>Status of fetching suggestions: {fetchSuggestion.status}</p>
       <p>
         Used tokens: promptTokens={promptTokens} completionTokens=
