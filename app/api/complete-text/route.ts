@@ -20,7 +20,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const model = req.nextUrl.searchParams.get('model') ?? 'gpt-3.5-turbo'
 
-    const response = await openai.chat.completions.create({
+    const openAIResponse = await openai.chat.completions.create({
       model,
       messages: [
         {
@@ -32,11 +32,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       temperature: 0.25,
       ...(model != 'gpt-4' ? { response_format: { type: 'json_object' } } : {}),
     })
-    const { choices } = response
+    const { choices } = openAIResponse
 
     if (choices.length === 0 || choices[0].message.content === null) {
       return NextResponse.json(
-        { error: 'No completions found' },
+        { error: 'No completions found', openAIResponse },
         { status: 500 },
       )
     }
@@ -44,15 +44,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const completion = JSON.parse(choices[0].message.content) as unknown
 
     if (!Completion.is(completion)) {
-      return NextResponse.json({ error: 'Invalid completion' }, { status: 500 })
+      return NextResponse.json(
+        { error: 'Invalid completion', openAIResponse },
+        { status: 500 },
+      )
     }
 
     const suggestion = (completion.newWord ? ' ' : '') + completion.completion
 
     return NextResponse.json({
       suggestion,
-      promptTokens: response.usage?.prompt_tokens ?? 0,
-      completionTokens: response.usage?.completion_tokens ?? 0,
+      promptTokens: openAIResponse.usage?.prompt_tokens ?? 0,
+      completionTokens: openAIResponse.usage?.completion_tokens ?? 0,
+      openAIResponse,
     })
   } catch (error) {
     console.error('Error fetching suggestion:', error)
