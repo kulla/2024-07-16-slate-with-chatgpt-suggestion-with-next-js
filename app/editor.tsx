@@ -52,11 +52,35 @@ enum Model {
   GPT_4O_MINI = 'gpt-4o-mini',
 }
 
+const defaultPrompt = `Du bist ein KI-Assistent, der darauf spezialisiert ist, Lernmaterialien in deutscher Sprache zu vervollständigen. Deine Aufgabe ist es, einen gegebenen Text zu ergänzen, indem du maximal einen Absatz oder zwei Sätze hinzufügst.
+
+Beachte folgende Richtlinien bei der Textvervollständigung:
+- Füge nur relevante und thematisch passende Informationen hinzu.
+- Achte auf einen flüssigen Übergang zwischen dem vorhandenen Text und deiner Ergänzung.
+- Verwende einen sachlichen und informativen Schreibstil, der für Lernmaterialien geeignet ist.
+- Stelle sicher, dass deine Ergänzung grammatikalisch korrekt und stilistisch angemessen ist.
+- Wenn deine Ergänzung mit einem Wort beginnt, so füge ein Leerzeichen am Anfang hinzu, damit sie korrekt an den vorhandenen Text angehängt werden kann.
+
+Der gegebene Text wird im folgenden Benutzer-Prompt vorgegeben. Dieser hat das folgende Format:
+
+<text>
+{{TEXT}}
+</text>
+
+Vervollständige nun den Text, indem du maximal einen Absatz oder zwei Sätze hinzufügst. Achte darauf, dass deine Ergänzung nahtlos an den vorhandenen Text anschließt und die oben genannten Richtlinien befolgt.
+
+Deine Antwort soll im JSON-Format erfolgen und folgende Felder enthalten:
+- "completion": Der Text, den du zur Vervollständigung hinzufügst (maximal ein Absatz oder zwei Sätze).
+- "newWord": Ein boolescher Wert (true/false), der angibt, ob die Ergänzung mit einem eigenen Absatz beginnt (true) oder direkt an den bestehenden Text anschließt (false).
+
+Analysiere den gegebenen Text sorgfältig und erstelle dann eine passende Ergänzung. Gib deine Antwort im spezifizierten JSON-Format aus, ohne zusätzliche Erklärungen oder Kommentare.`
+
 const SlateEditor = () => {
   const password = React.useContext(PasswordContext)
 
   const [waitTimeForSuggestion, setWaitTimeForSuggestion] = React.useState(500)
   const [model, setModel] = React.useState<Model>(Model.GPT_3_5_TURBO)
+  const [prompt, setPrompt] = React.useState(defaultPrompt)
 
   const controller = React.useRef<AbortController | null>(null)
   const lastChange = React.useRef<number>(Date.now())
@@ -83,7 +107,7 @@ const SlateEditor = () => {
     }) => {
       controller.current = new AbortController()
       const response = await fetch(
-        `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}&model=${model}`,
+        `/api/complete-text?suffix=${encodeURIComponent(suffix)}&password=${encodeURIComponent(password)}&model=${model}&prompt=${encodeURIComponent(prompt)}`,
         { signal: controller.current.signal, method: 'POST' },
       )
       if (!response.ok) {
@@ -255,6 +279,16 @@ const SlateEditor = () => {
             </option>
           ))}
         </select>
+      </div>
+      <div className="mt-2">
+        <label>Prompt: </label>
+        <textarea
+          className="border rounded-lg p-1"
+          value={prompt}
+          cols={60}
+          rows={10}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
       </div>
       <h1>Data about the prototype</h1>
       <p>Status of fetching suggestions: {fetchSuggestion.status}</p>
