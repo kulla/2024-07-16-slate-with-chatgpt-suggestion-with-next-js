@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { OpenAI } from 'openai'
 
-const Completion = t.type({ completion: t.string, newWord: t.boolean })
+const Completion = t.type({ completion: t.string })
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
