@@ -186,7 +186,7 @@ const SlateEditor = () => {
   return (
     <>
       <h1>Editor</h1>
-      <div className="mt-1 border rounded-lg mb-2">
+      <div className="mt-1 border rounded-lg mb-2" lang="de">
         <div
           style={{ backgroundColor: '#FFBE5E' }}
           className="p-2 flex space-x-2 rounded-t-lg"
@@ -224,7 +224,6 @@ const SlateEditor = () => {
         {completionTokens}
       </p>
       <p>Costs so far: {cost}$</p>
-      <p>Costs of 100 similar usages: {cost * 100}$</p>
     </>
   )
 }
