@@ -1,3 +1,5 @@
+### ARCHIVED: This feature has been included in a demo branch of the [Serlo editor](https://serlo.org/editor), see https://github.com/serlo/frontend/pull/4064.
+
 # 2024-07-16-slate-with-chatgpt-suggestion-with-next-js
 
 This is a prototype for demonstrating how ChatGPT can be used to add suggestions
